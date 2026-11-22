@@ -7,7 +7,7 @@ Open index.html in a browser, or upload this whole folder to any web server
 (works at the domain root or in a sub-folder).
 
   *.html        one file per page (index, resources, products, news-events,
-                contact, people-current, people-alumni, project-1..5, 404,
+                contact, people (current members + alumni), project-1..5, 404,
                 publications)
   css/style.css all styling (compiled Tailwind)
   js/site.js    menus, "Apply Now" dialog, project search, news "Read More"
