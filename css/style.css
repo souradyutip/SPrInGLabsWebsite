@@ -6,4 +6,4 @@
 /* Desktop nav: keep labels on one line; tighten spacing on narrower screens */
 .ml-10.items-baseline a{white-space:nowrap}
 @media (max-width:1279px){.ml-10.items-baseline.space-x-8{margin-left:1rem}.ml-10.items-baseline.space-x-8>:not(:last-child){margin-inline-end:.25rem}}
-@media (min-width:768px) and (max-width:1099px){nav .hidden.md\:block{display:none}nav .md\:hidden{display:block}}
+@media (min-width:768px) and (max-width:1179px){nav .hidden.md\:block{display:none}nav .md\:hidden{display:block}}

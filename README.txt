@@ -8,8 +8,8 @@ Open index.html in a browser, or upload this whole folder to any web server
 
   index.html    the whole site as one scrolling page. Each section is a block
                 <div data-page="NAME" id="NAME"> ... </div>, reached at index.html#NAME:
-                home, projects, resources, people, publications, products,
-                news-events, contact. project-1 .. project-5 are detail pages
+                home, people, projects, resources, publications, products,
+                news-events. project-1 .. project-5 are detail pages
                 that replace the scrolling page while open.
   404.html      "page not found" page (kept separate; web servers need it)
   css/style.css base styling (compiled Tailwind; do not edit by hand)

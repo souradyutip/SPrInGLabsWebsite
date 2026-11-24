@@ -189,14 +189,15 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 #resources > section,
 #publications > section,
 #products > section,
-#news-events > section,
-#contact > section { padding: 96px 0; }
-#resources > section,
+#news-events > section { padding: 96px 0; }
+/* Alternate backgrounds in page order: People (white), Projects, Resources,
+   Publications, Products, News & Events. */
+#projects > section,
 #publications > section,
 #news-events > section { background: var(--alt); }
 @media (max-width: 640px) {
   #projects > section, #resources > section, #publications > section,
-  #products > section, #news-events > section, #contact > section { padding: 64px 0; }
+  #products > section, #news-events > section { padding: 64px 0; }
 }
 
 .sec-head { max-width: 720px; margin: 0 auto 56px; text-align: center; }
@@ -392,32 +393,6 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   [data-pub] { padding: 16px 18px 16px 20px; }
 }
 
-/* ================= Contact (dark band) ================= */
-#contact > section {
-  position: relative;
-  color: #fff;
-  background:
-    radial-gradient(900px 480px at 100% 0%, rgba(6, 182, 212, .28), transparent 60%),
-    linear-gradient(135deg, var(--navy) 0%, #132a6b 60%, #0c4a6e 100%);
-}
-#contact .sec-head h2 { color: #fff; }
-#contact .sec-eyebrow { color: #a5f3fc; }
-#contact .sec-head p:not(.sec-eyebrow) { color: #cbd5e1; }
-#contact .max-w-4xl { max-width: 1040px; }
-#contact .bg-gray-50 { background: none; padding: 0; border-radius: 0; }
-#contact .grid { gap: 20px; }
-#contact .grid > div {
-  padding: 30px 24px;
-  border-radius: var(--radius);
-  background: rgba(255, 255, 255, .06);
-  border: 1px solid rgba(255, 255, 255, .14);
-  transition: background .2s, border-color .2s;
-}
-#contact .grid > div:hover { background: rgba(255, 255, 255, .09); border-color: rgba(255, 255, 255, .24); }
-#contact .grid .bg-primary { width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, var(--brand), var(--accent)); }
-#contact .grid h3 { color: #fff; }
-#contact .grid a, #contact .grid p { color: #e0f2fe; overflow-wrap: anywhere; }
-#contact .grid a:hover { color: #fff; text-decoration: underline; }
 
 /* ================= Project detail pages ================= */
 [data-page^="project-"] > section { padding: 48px 0 88px; }
