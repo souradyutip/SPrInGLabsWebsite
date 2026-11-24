@@ -6,9 +6,273 @@
     <title>SPRING - Security and Privacy for Industrial and Governance</title>
     
     <link rel="stylesheet" href="css/style.css">
+      <style>
+      /* ---------- People page ---------- */
+      .pp { --pp-primary:#1e40af; --pp-accent:#06b6d4; --pp-ink:#1f2937; --pp-muted:#4b5563; --pp-line:#e5e7eb; --pp-soft:#eff6ff; background:#f8fafc; color:var(--pp-ink); }
+      .pp-wrap { max-width:1200px; margin:0 auto; padding:0 16px; }
+      @media (min-width:640px){ .pp-wrap { padding:0 24px; } }
+
+      .pp-hero { background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 55%,#0e7490 100%); color:#fff; padding:56px 0 48px; }
+      .pp-eyebrow { font-size:13px; letter-spacing:.12em; text-transform:uppercase; color:#a5f3fc; font-weight:600; margin:0 0 10px; }
+      .pp-hero h1 { font-size:clamp(30px,5vw,44px); font-weight:700; line-height:1.15; margin:0 0 12px; }
+      .pp-hero p.pp-lede { font-size:17px; line-height:1.6; color:#dbeafe; max-width:640px; margin:0; }
+      .pp-jump { display:flex; flex-wrap:wrap; gap:10px; margin-top:28px; }
+      .pp-jump a { display:inline-flex; align-items:center; gap:8px; padding:8px 14px; border-radius:999px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); color:#fff; font-size:14px; font-weight:500; text-decoration:none; transition:background .15s; }
+      .pp-jump a:hover { background:rgba(255,255,255,.22); }
+      .pp-jump span { background:#fff; color:var(--pp-primary); border-radius:999px; font-size:12px; font-weight:700; min-width:22px; padding:1px 7px; text-align:center; }
+
+      .pp-section { padding:48px 0 8px; scroll-margin-top:72px; }
+      .pp-section:last-of-type { padding-bottom:64px; }
+      .pp-head { display:flex; align-items:baseline; gap:12px; margin-bottom:20px; }
+      .pp-head h2 { font-size:24px; font-weight:700; margin:0; }
+      .pp-head .pp-count { font-size:14px; color:var(--pp-muted); }
+      .pp-head::after { content:""; flex:1; height:1px; background:var(--pp-line); align-self:center; }
+
+      /* PI */
+      .pp-pi { display:grid; grid-template-columns:220px 1fr; gap:32px; align-items:center; background:#fff; border:1px solid var(--pp-line); border-radius:20px; padding:28px; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+      .pp-pi .pp-photo { width:220px; height:220px; border-radius:16px; }
+      .pp-pi h3 { font-size:26px; font-weight:700; margin:0 0 4px; }
+      .pp-pi .pp-role { font-size:16px; }
+      @media (max-width:700px){ .pp-pi { grid-template-columns:1fr; text-align:center; padding:24px; } .pp-pi .pp-photo { margin:0 auto; width:180px; height:180px; } .pp-pi .pp-tags, .pp-pi .pp-actions { justify-content:center; } }
+
+      /* Member cards */
+      .pp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr)); gap:20px; }
+      .pp-card { display:flex; flex-direction:column; background:#fff; border:1px solid var(--pp-line); border-radius:16px; overflow:hidden; transition:transform .2s, box-shadow .2s, border-color .2s; }
+      .pp-card:hover { transform:translateY(-3px); box-shadow:0 12px 24px -12px rgba(30,64,175,.25); border-color:#bfdbfe; }
+      .pp-card .pp-photo { width:100%; aspect-ratio:1/1; border-radius:0; }
+      .pp-card-body { display:flex; flex-direction:column; gap:10px; padding:18px; flex:1; }
+      .pp-card h3 { font-size:18px; font-weight:600; margin:0; line-height:1.3; }
+      .pp-card .pp-actions { margin-top:auto; padding-top:6px; }
+
+      /* Alumni */
+      .pp-alumni { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr)); gap:16px; }
+      .pp-alum { display:flex; gap:16px; align-items:flex-start; background:#fff; border:1px solid var(--pp-line); border-radius:14px; padding:16px; }
+      .pp-alum .pp-photo { width:72px; height:72px; border-radius:50%; flex-shrink:0; font-size:22px; }
+      .pp-alum h3 { font-size:16px; font-weight:600; margin:0 0 2px; }
+      .pp-alum .pp-topic { font-size:13px; color:var(--pp-muted); margin:6px 0 8px; line-height:1.45; }
+      .pp-alum-body { min-width:0; flex:1; }
+      .pp-alum .pp-label { font-weight:600; color:var(--pp-ink); }
+
+      /* Shared bits */
+      .pp-photo { display:block; object-fit:cover; object-position:center top; background:linear-gradient(135deg,#dbeafe,#cffafe); }
+      .pp-initials { display:flex; align-items:center; justify-content:center; color:var(--pp-primary); font-weight:700; font-size:48px; letter-spacing:.02em; }
+      .pp-role { display:inline-block; color:var(--pp-primary); font-weight:600; font-size:14px; }
+      .pp-tags { display:flex; flex-wrap:wrap; gap:6px; margin:0; padding:0; list-style:none; }
+      .pp-tags li { font-size:12px; font-weight:500; color:#075985; background:#ecfeff; border:1px solid #cffafe; padding:3px 9px; border-radius:999px; }
+      .pp-pi .pp-tags { margin:16px 0 20px; }
+      .pp-pi .pp-tags li { font-size:13px; padding:4px 12px; }
+      .pp-actions { display:flex; flex-wrap:wrap; gap:8px; }
+      .pp-btn { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:500; padding:7px 12px; border-radius:8px; border:1px solid var(--pp-line); color:var(--pp-ink); text-decoration:none; transition:all .15s; max-width:100%; }
+      .pp-btn:hover { border-color:var(--pp-primary); color:var(--pp-primary); background:var(--pp-soft); }
+      .pp-btn.pp-primary { background:var(--pp-primary); border-color:var(--pp-primary); color:#fff; }
+      .pp-btn.pp-primary:hover { background:#1e3a8a; color:#fff; }
+      .pp-btn svg { width:15px; height:15px; flex-shrink:0; }
+      .pp-icon { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:8px; border:1px solid var(--pp-line); color:var(--pp-muted); transition:all .15s; }
+      .pp-icon:hover { color:var(--pp-primary); border-color:var(--pp-primary); background:var(--pp-soft); }
+      .pp-icon svg { width:15px; height:15px; }
+      .pp a:focus-visible { outline:2px solid var(--pp-accent); outline-offset:2px; }
+      .pp-btn { overflow-wrap:anywhere; }
+      @media (max-width:560px){ .pp-hero { padding:40px 0 36px; } .pp-card .pp-photo { aspect-ratio:4/3; } .pp-alumni { grid-template-columns:1fr; } .pp-section { padding-top:36px; } }
+    </style>
+    <script>
+      /* Replace a photo that fails to load with the person's initials. */
+      function ppFallback(img) {
+        var name = (img.getAttribute('alt') || '').replace(/^(Prof|Dr|Mr|Ms|Mrs)\.?\s+/i, '');
+        var parts = name.split(/\s+/).filter(Boolean);
+        var initials = parts.length ? (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase() : '?';
+        var div = document.createElement('div');
+        div.className = img.className + ' pp-initials';
+        div.setAttribute('role', 'img');
+        div.setAttribute('aria-label', img.getAttribute('alt') || '');
+        div.textContent = initials;
+        img.replaceWith(div);
+      }
+    </script>
   </head>
   <body>
-    <div id="root"><nav class="w-full bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50"><div class="w-full mx-auto px-4 sm:px-6 lg:px-8"><div class="flex justify-between items-center h-16"><div class="flex-shrink-0 flex items-center"><a href="index.html" class="flex items-center space-x-3 cursor-pointer"><div class="w-15 h-15  rounded-lg flex items-center justify-center"><img alt="SPRING Lab Logo" src="assets/logo-CkBwuu7x.png"></div><div><h1 class="text-xl font-semibold text-dark">SPrInG Labs</h1><p class="text-xs text-secondary hidden sm:block"><b>S</b>ecurity &amp; <b>Pr</b>ivacy for <b>In</b>dustries and <b>G</b>overnance</p></div></a></div><div class="hidden md:block"><div class="ml-10 flex items-baseline space-x-8"><div class="relative"><a class="text-dark hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-accent/10 border-b-2 border-transparent hover:border-primary" href="index.html">Home </a></div><div class="relative"><a class="text-dark hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-accent/10 border-b-2 border-transparent hover:border-primary" href="resources.html">Resources </a></div><div class="relative"><a class="text-dark hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-accent/10 border-b-2 border-transparent hover:border-primary" href="people.html">People</a></div><div class="relative"><a class="text-dark hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-accent/10 border-b-2 border-transparent hover:border-primary" href="publications.html">Publications</a></div><div class="relative"><a class="text-dark hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-accent/10 border-b-2 border-transparent hover:border-primary" href="products.html">Products </a></div><div class="relative"><a class="text-dark hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-accent/10 border-b-2 border-transparent hover:border-primary" href="news-events.html">News &amp; Events </a></div><div class="relative"><a class="text-dark hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-accent/10 border-b-2 border-transparent hover:border-primary" href="contact.html">Contact </a></div></div></div><div class="md:hidden"><button class="inline-flex items-center justify-center p-2 rounded-md text-dark hover:text-primary hover:bg-accent/10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary transition-colors duration-200" data-mobile-toggle="" aria-label="Toggle menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu block h-6 w-6 animate-rotateIn" aria-hidden="true" data-icon-open=""><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x block h-6 w-6 animate-rotateIn hidden" aria-hidden="true" data-icon-close=""><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div></div><div class="md:hidden transition-all duration-300 ease-in-out overflow-hidden max-h-0 opacity-0" data-mobile-panel=""><div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200 shadow-inner"><div class="transition-all duration-300 ease-out" style="animation-delay: 0ms;"><a class="text-dark hover:text-primary block px-3 py-3 rounded-md text-base font-medium transition-all duration-200 hover:bg-accent/10 border-l-4 border-transparent hover:border-primary transform transition-all duration-300 -translate-x-4 opacity-0" href="index.html">Home </a></div><div class="transition-all duration-300 ease-out" style="animation-delay: 0ms;"><a class="text-dark hover:text-primary block px-3 py-3 rounded-md text-base font-medium transition-all duration-200 hover:bg-accent/10 border-l-4 border-transparent hover:border-primary transform transition-all duration-300 -translate-x-4 opacity-0" href="resources.html">Resources </a></div><div class="transition-all duration-300 ease-out" style="animation-delay: 0ms;"><a class="text-dark hover:text-primary block px-3 py-3 rounded-md text-base font-medium transition-all duration-200 hover:bg-accent/10 border-l-4 border-transparent hover:border-primary transform transition-all duration-300 -translate-x-4 opacity-0" href="people.html">People</a></div><div class="transition-all duration-300 ease-out" style="animation-delay: 0ms;"><a class="text-dark hover:text-primary block px-3 py-3 rounded-md text-base font-medium transition-all duration-200 hover:bg-accent/10 border-l-4 border-transparent hover:border-primary transform transition-all duration-300 -translate-x-4 opacity-0" href="publications.html">Publications</a></div><div class="transition-all duration-300 ease-out" style="animation-delay: 0ms;"><a class="text-dark hover:text-primary block px-3 py-3 rounded-md text-base font-medium transition-all duration-200 hover:bg-accent/10 border-l-4 border-transparent hover:border-primary transform transition-all duration-300 -translate-x-4 opacity-0" href="products.html">Products </a></div><div class="transition-all duration-300 ease-out" style="animation-delay: 0ms;"><a class="text-dark hover:text-primary block px-3 py-3 rounded-md text-base font-medium transition-all duration-200 hover:bg-accent/10 border-l-4 border-transparent hover:border-primary transform transition-all duration-300 -translate-x-4 opacity-0" href="news-events.html">News &amp; Events </a></div><div class="transition-all duration-300 ease-out" style="animation-delay: 0ms;"><a class="text-dark hover:text-primary block px-3 py-3 rounded-md text-base font-medium transition-all duration-200 hover:bg-accent/10 border-l-4 border-transparent hover:border-primary transform transition-all duration-300 -translate-x-4 opacity-0" href="contact.html">Contact </a></div></div></div></div></nav><div class="min-h-screen bg-gray-50 py-12"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div class="text-center mb-12"><h1 class="text-4xl font-bold text-dark mb-4">Current Members</h1><p class="text-lg text-secondary max-w-2xl mx-auto">Meet our dedicated team of researchers, students, and staffs.</p></div><div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8"><div class="mb-12"><h2 class="text-2xl text-center font-bold text-dark mb-6 pb-2 border-b border-gray-200">Principal Investigator</h2><div class="grid grid-cols-1 gap-6 items-center"><div class="w-full bg-white rounded-lg border border-gray-200 p-6 "><div class="flex flex-col items-center gap-4"><div class="flex-shrink-0"><img alt="Prof. Souradyuti Paul" class="w-60 h-60 rounded-full object-cover border-2 border-gray-100" src="people/SouradyutiP.jpg"></div><div class="flex-1 flex flex-col items-center min-w-0"><div class="flex flex-col items-center text-center"><a href="https://souradyutip.github.io/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-lg font-semibold text-dark hover:text-primary transition-colors duration-200">Prof. Souradyuti Paul<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link h-4 w-4" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></a><p class="text-primary font-medium text-sm">Professor</p></div><div class="space-y-1 flex flex-col items-center "><div class="text-sm text-center text-secondary"><span class="font-medium">Topic:</span> Blockchain, Cryptography</div><div class="text-sm leading-3"><a href="mailto:souradyuti@iitbhilai.ac.in" class="text-primary ">souradyuti@iitbhilai.ac.in</a></div></div></div></div></div></div></div><div class="mb-12"><h2 class="text-2xl text-center font-bold text-dark mb-6 pb-2 border-b border-gray-200">PhD Students</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center"><div class="w-full bg-white rounded-lg border border-gray-200 p-6 "><div class="flex flex-col items-center gap-4"><div class="flex-shrink-0"><img alt="Abu Talha" class="w-60 h-60 rounded-full object-cover border-2 border-gray-100" src="people/AbuT.jpeg"></div><div class="flex-1 flex flex-col items-center min-w-0"><div class="flex flex-col items-center text-center"><a href="https://sites.google.com/view/talhaiiserb/home" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-lg font-semibold text-dark hover:text-primary transition-colors duration-200">Abu Talha<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link h-4 w-4" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></a><p class="text-primary font-medium text-sm">Research Scholar</p></div><div class="space-y-1 flex flex-col items-center "><div class="text-sm text-center text-secondary"><span class="font-medium">Topic:</span> Statistics, Diffusion Models</div><div class="text-sm leading-3"><a href="mailto:abut@iibhilai.ac.in" class="text-primary ">abut@iibhilai.ac.in</a></div></div></div></div></div><div class="w-full bg-white rounded-lg border border-gray-200 p-6 "><div class="flex flex-col items-center gap-4"><div class="flex-shrink-0"><img alt="Vijay Shankar Tiwari" class="w-60 h-60 rounded-full object-cover border-2 border-gray-100" src="people/VijayST.jpeg"></div><div class="flex-1 flex flex-col items-center min-w-0"><div class="flex flex-col items-center text-center"><a href="https://www.linkedin.com/in/vijay-shankar-tiwari-5637b1337/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-lg font-semibold text-dark hover:text-primary transition-colors duration-200">Vijay Shankar Tiwari<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link h-4 w-4" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></a><p class="text-primary font-medium text-sm">Research Scholar</p></div><div class="space-y-1 flex flex-col items-center "><div class="text-sm text-center text-secondary"><span class="font-medium">Topic:</span> TBD</div><div class="text-sm leading-3"><a href="mailto:vijayst@iitbhilai.ac.in" class="text-primary ">vijayst@iitbhilai.ac.in</a></div></div></div></div></div></div></div><div class="mb-12"><h2 class="text-2xl text-center font-bold text-dark mb-6 pb-2 border-b border-gray-200">Research Associates</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center"><div class="w-full bg-white rounded-lg border border-gray-200 p-6 "><div class="flex flex-col items-center gap-4"><div class="flex-shrink-0"><img alt="Renu Bakshi" class="w-60 h-60 rounded-full object-cover border-2 border-gray-100" src="people/RenuB.jpeg"></div><div class="flex-1 flex flex-col items-center min-w-0"><div class="flex flex-col items-center text-center"><a href="https://www.linkedin.com/in/renu-bakshi/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-lg font-semibold text-dark hover:text-primary transition-colors duration-200">Renu Bakshi<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link h-4 w-4" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></a><p class="text-primary font-medium text-sm">Crypto Security Engineer</p></div><div class="space-y-1 flex flex-col items-center "><div class="text-sm text-center text-secondary"><span class="font-medium">Topic:</span> Blockchain Technology, Fintech Security</div><div class="text-sm leading-3"><a href="mailto:renu47010@gmail.com" class="text-primary ">renu47010@gmail.com</a></div></div></div></div></div><div class="w-full bg-white rounded-lg border border-gray-200 p-6 "><div class="flex flex-col items-center gap-4"><div class="flex-shrink-0"><img alt="Rohan Madhukar Wasnik" class="w-60 h-60 rounded-full object-cover border-2 border-gray-100" src="people/RohanMW.jpg"></div><div class="flex-1 flex flex-col items-center min-w-0"><div class="flex flex-col items-center text-center"><a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-lg font-semibold text-dark hover:text-primary transition-colors duration-200">Rohan Madhukar Wasnik<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link h-4 w-4" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></a><p class="text-primary font-medium text-sm">Project Assistant</p></div><div class="space-y-1 flex flex-col items-center "><div class="text-sm text-center text-secondary"><span class="font-medium">Topic:</span> Blockchain Technology, Fintech Security</div><div class="text-sm leading-3"><a href="mailto:wasnikrohan853@gmail.com" class="text-primary ">wasnikrohan853@gmail.com</a></div></div></div></div></div><div class="w-full bg-white rounded-lg border border-gray-200 p-6 "><div class="flex flex-col items-center gap-4"><div class="flex-shrink-0"><img alt="Mr. Arup Kumar Paul" class="w-60 h-60 rounded-full object-cover border-2 border-gray-100" src="people/ArupKP.jpeg"></div><div class="flex-1 flex flex-col items-center min-w-0"><div class="flex flex-col items-center text-center"><a href="mailto:arupkumar@iitbhilai.ac.in" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-lg font-semibold text-dark hover:text-primary transition-colors duration-200">Mr. Arup Kumar Paul<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link h-4 w-4" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></a><p class="text-primary font-medium text-sm">Project Associate</p></div><div class="space-y-1 flex flex-col items-center "><div class="text-sm text-center text-secondary"><span class="font-medium">Topic:</span> Smart Card, Fintech Security, Web/App Development, E-Governance</div><div class="text-sm leading-3"><a href="mailto:arupkumar@iitbhilai.ac.in" class="text-primary ">arupkumar@iitbhilai.ac.in</a></div></div></div></div></div></div></div><div class="mb-12" id="alumni"><h2 class="text-2xl text-center font-bold text-dark mb-6 pb-2 border-b border-gray-200">Alumni</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center"><div class="w-full bg-white rounded-lg border border-gray-200 p-6 "><div class="flex flex-col items-center gap-4"><div class="flex-shrink-0"><img alt="Goutam Halder" class="w-60 h-60 rounded-full object-cover border-2 border-gray-100" src="people/GoutamH.jpeg"></div><div class="flex-1 flex flex-col items-center min-w-0"><div class="flex flex-col items-center text-center"><a href="https://linkedin.com/in/alexjohnson" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-lg font-semibold text-dark hover:text-primary transition-colors duration-200">Goutam Halder<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link h-4 w-4" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></a><p class="text-primary font-medium text-sm">M.Tech Student</p></div><div class="space-y-1 flex flex-col items-center "><div class="text-sm text-center text-secondary"><span class="font-medium">Topic:</span> Blockchain In E-governance</div><div class="text-sm leading-3"><a href="mailto:goutamhald@iitbhilai.ac.in" class="text-primary ">goutamhald@iitbhilai.ac.in</a></div></div></div></div></div><div class="w-full bg-white rounded-lg border border-gray-200 p-6 "><div class="flex flex-col items-center gap-4"><div class="flex-shrink-0"><img alt="Prakhar Garg" class="w-60 h-60 rounded-full object-cover border-2 border-gray-100" src="people/PrakharG.jpeg"></div><div class="flex-1 flex flex-col items-center min-w-0"><div class="flex flex-col items-center text-center"><a href="https://linkedin.com/in/weizhang" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-lg font-semibold text-dark hover:text-primary transition-colors duration-200">Prakhar Garg<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link h-4 w-4" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></a><p class="text-primary font-medium text-sm">M.Tech Student</p></div><div class="space-y-1 flex flex-col items-center "><div class="text-sm text-center text-secondary"><span class="font-medium">Topic:</span> Blockchain Technology</div><div class="text-sm leading-3"><a href="mailto:prakhargar@iitbhilai.ac.in" class="text-primary ">prakhargar@iitbhilai.ac.in</a></div></div></div></div></div><div class="w-full bg-white rounded-lg border border-gray-200 p-6 "><div class="flex flex-col items-center gap-4"><div class="flex-shrink-0"><img alt="Bhakti Dhorajiya" class="w-60 h-60 rounded-full object-cover border-2 border-gray-100" src="https://media.licdn.com/dms/image/v2/D4D03AQF4_JYTofX2GA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1720455874897?e=1764201600&amp;v=beta&amp;t=P_i9aOwP8jFPy8IjjAWJrMJ2VDfoseFQECjmIwXdsUk"></div><div class="flex-1 flex flex-col items-center min-w-0"><div class="flex flex-col items-center text-center"><a href="https://www.linkedin.com/in/bhakti-dhorajiya-291216201/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-lg font-semibold text-dark hover:text-primary transition-colors duration-200">Bhakti Dhorajiya<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link h-4 w-4" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></a><p class="text-primary font-medium text-sm">M.Tech(Thesis) Student</p></div><div class="space-y-1 flex flex-col items-center "><div class="text-sm text-center text-secondary"><span class="font-medium">Topic:</span> On secure E- voting</div><div class="text-sm leading-3"><a href="mailto:bhaktikdhorajiya@gmail.com" class="text-primary ">bhaktikdhorajiya@gmail.com</a></div></div></div></div></div><div class="w-full bg-white rounded-lg border border-gray-200 p-6 "><div class="flex flex-col items-center gap-4"><div class="flex-shrink-0"><img alt="Abhishek Neogi" class="w-60 h-60 rounded-full object-cover border-2 border-gray-100" src="https://media.licdn.com/dms/image/v2/D4D03AQHzspQPs6FoaA/profile-displayphoto-scale_400_400/B4DZqltwbhIMAg-/0/1763716828811?e=1765411200&amp;v=beta&amp;t=gzEdsY47WLcyzv-d599ZqbrO-EnZSDMwKYpW2ZgoKuo"></div><div class="flex-1 flex flex-col items-center min-w-0"><div class="flex flex-col items-center text-center"><a href="https://www.linkedin.com/in/abhishek-neogi-472783228/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-lg font-semibold text-dark hover:text-primary transition-colors duration-200">Abhishek Neogi<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link h-4 w-4" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></a><p class="text-primary font-medium text-sm">Intern</p></div><div class="space-y-1 flex flex-col items-center "><div class="text-sm text-center text-secondary"><span class="font-medium">Topic:</span> Blockchain Applications</div><div class="text-sm leading-3"><a href="mailto:work.abhishek0908@gmail.com" class="text-primary ">work.abhishek0908@gmail.com</a></div></div></div></div></div><div class="w-full bg-white rounded-lg border border-gray-200 p-6 "><div class="flex flex-col items-center gap-4"><div class="flex-shrink-0"><img alt="Rishabh Kumar Dewangan" class="w-60 h-60 rounded-full object-cover border-2 border-gray-100" src="people/RishabhKD.jpeg"></div><div class="flex-1 flex flex-col items-center min-w-0"><div class="flex flex-col items-center text-center"><a href="https://medium.com/@rishabhkumar-rk" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-lg font-semibold text-dark hover:text-primary transition-colors duration-200">Rishabh Kumar Dewangan<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link h-4 w-4" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></a><p class="text-primary font-medium text-sm">Project Associate</p></div><div class="space-y-1 flex flex-col items-center "><div class="text-sm text-center text-secondary"><span class="font-medium">Topic:</span> Cyber security- web app/apk pentesting</div><div class="text-sm leading-3"><a href="mailto:rishabhsstc@gmail.com" class="text-primary ">rishabhsstc@gmail.com</a></div></div></div></div></div><div class="w-full bg-white rounded-lg border border-gray-200 p-6 "><div class="flex flex-col items-center gap-4"><div class="flex-shrink-0"><img alt="Devansh Shrivastvava" class="w-60 h-60 rounded-full object-cover border-2 border-gray-100" src="people/DevanshS.jpeg"></div><div class="flex-1 flex flex-col items-center min-w-0"><div class="flex flex-col items-center text-center"><a href="https://linkedin.com/in/robertwilson" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 text-lg font-semibold text-dark hover:text-primary transition-colors duration-200">Devansh Shrivastvava<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link h-4 w-4" aria-hidden="true"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></a><p class="text-primary font-medium text-sm">Junior Research Fellow</p></div><div class="space-y-1 flex flex-col items-center "><div class="text-sm text-center text-secondary"><span class="font-medium">Topic:</span> Blockchain Technology, Fintech Security</div><div class="text-sm leading-3"><a href="mailto:devansh@iitbhilai.ac.in" class="text-primary ">devansh@iitbhilai.ac.in</a></div></div></div></div></div></div></div></div></div></div><footer class="w-full bg-gray-100 border-t border-gray-200 "><div class="flex flex-col lg:flex-row justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><div><p class="text-gray-700 my-2 text-sm text-center lg:text-right">Site developed and managed by: <span class="font-semibold">Devansh Shrivastava</span></p></div><div class="text-center"><p class="text-gray-700 text-sm my-2">© 2026 <span class="font-semibold">SPRING Labs</span>: All rights reserved.</p></div><div><p class="text-gray-700 text-sm my-2 text-center lg:text-right">The word "SPRING Labs" was conceived by <span class="font-semibold">Dr. Dhiman Saha (CSE, IIT Bhilai)</span></p></div></div></footer></div>
+    <div id="root"><nav class="w-full bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50"><div class="w-full mx-auto px-4 sm:px-6 lg:px-8"><div class="flex justify-between items-center h-16"><div class="flex-shrink-0 flex items-center"><a href="index.html" class="flex items-center space-x-3 cursor-pointer"><div class="w-15 h-15  rounded-lg flex items-center justify-center"><img alt="SPRING Lab Logo" src="assets/logo-CkBwuu7x.png"></div><div><h1 class="text-xl font-semibold text-dark">SPrInG Labs</h1><p class="text-xs text-secondary hidden sm:block"><b>S</b>ecurity &amp; <b>Pr</b>ivacy for <b>In</b>dustries and <b>G</b>overnance</p></div></a></div><div class="hidden md:block"><div class="ml-10 flex items-baseline space-x-8"><div class="relative"><a class="text-dark hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-accent/10 border-b-2 border-transparent hover:border-primary" href="index.html">Home </a></div><div class="relative"><a class="text-dark hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-accent/10 border-b-2 border-transparent hover:border-primary" href="resources.html">Resources </a></div><div class="relative"><a class="text-dark hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-accent/10 border-b-2 border-transparent hover:border-primary" href="people.html">People</a></div><div class="relative"><a class="text-dark hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-accent/10 border-b-2 border-transparent hover:border-primary" href="publications.html">Publications</a></div><div class="relative"><a class="text-dark hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-accent/10 border-b-2 border-transparent hover:border-primary" href="products.html">Products </a></div><div class="relative"><a class="text-dark hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-accent/10 border-b-2 border-transparent hover:border-primary" href="news-events.html">News &amp; Events </a></div><div class="relative"><a class="text-dark hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-accent/10 border-b-2 border-transparent hover:border-primary" href="contact.html">Contact </a></div></div></div><div class="md:hidden"><button class="inline-flex items-center justify-center p-2 rounded-md text-dark hover:text-primary hover:bg-accent/10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary transition-colors duration-200" data-mobile-toggle="" aria-label="Toggle menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu block h-6 w-6 animate-rotateIn" aria-hidden="true" data-icon-open=""><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x block h-6 w-6 animate-rotateIn hidden" aria-hidden="true" data-icon-close=""><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div></div><div class="md:hidden transition-all duration-300 ease-in-out overflow-hidden max-h-0 opacity-0" data-mobile-panel=""><div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200 shadow-inner"><div class="transition-all duration-300 ease-out" style="animation-delay: 0ms;"><a class="text-dark hover:text-primary block px-3 py-3 rounded-md text-base font-medium transition-all duration-200 hover:bg-accent/10 border-l-4 border-transparent hover:border-primary transform transition-all duration-300 -translate-x-4 opacity-0" href="index.html">Home </a></div><div class="transition-all duration-300 ease-out" style="animation-delay: 0ms;"><a class="text-dark hover:text-primary block px-3 py-3 rounded-md text-base font-medium transition-all duration-200 hover:bg-accent/10 border-l-4 border-transparent hover:border-primary transform transition-all duration-300 -translate-x-4 opacity-0" href="resources.html">Resources </a></div><div class="transition-all duration-300 ease-out" style="animation-delay: 0ms;"><a class="text-dark hover:text-primary block px-3 py-3 rounded-md text-base font-medium transition-all duration-200 hover:bg-accent/10 border-l-4 border-transparent hover:border-primary transform transition-all duration-300 -translate-x-4 opacity-0" href="people.html">People</a></div><div class="transition-all duration-300 ease-out" style="animation-delay: 0ms;"><a class="text-dark hover:text-primary block px-3 py-3 rounded-md text-base font-medium transition-all duration-200 hover:bg-accent/10 border-l-4 border-transparent hover:border-primary transform transition-all duration-300 -translate-x-4 opacity-0" href="publications.html">Publications</a></div><div class="transition-all duration-300 ease-out" style="animation-delay: 0ms;"><a class="text-dark hover:text-primary block px-3 py-3 rounded-md text-base font-medium transition-all duration-200 hover:bg-accent/10 border-l-4 border-transparent hover:border-primary transform transition-all duration-300 -translate-x-4 opacity-0" href="products.html">Products </a></div><div class="transition-all duration-300 ease-out" style="animation-delay: 0ms;"><a class="text-dark hover:text-primary block px-3 py-3 rounded-md text-base font-medium transition-all duration-200 hover:bg-accent/10 border-l-4 border-transparent hover:border-primary transform transition-all duration-300 -translate-x-4 opacity-0" href="news-events.html">News &amp; Events </a></div><div class="transition-all duration-300 ease-out" style="animation-delay: 0ms;"><a class="text-dark hover:text-primary block px-3 py-3 rounded-md text-base font-medium transition-all duration-200 hover:bg-accent/10 border-l-4 border-transparent hover:border-primary transform transition-all duration-300 -translate-x-4 opacity-0" href="contact.html">Contact </a></div></div></div></div></nav><main class="pp">
+  <header class="pp-hero">
+    <div class="pp-wrap">
+      <p class="pp-eyebrow">SPrInG Labs · IIT Bhilai</p>
+      <h1>Our People</h1>
+      <p class="pp-lede">Meet the researchers, students and staff working on security and privacy for industries and governance, and the past members who helped build the lab.</p>
+      <nav class="pp-jump" aria-label="People sections">
+        <a href="#pi">Head</a>
+        <a href="#phd">PhD Students <span>2</span></a>
+        <a href="#staff">Research Staff <span>3</span></a>
+        <a href="#alumni">Past Members <span>6</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="pp-wrap">
+
+    <!-- ============ Head ============ -->
+    <section class="pp-section" id="pi">
+      <div class="pp-head"><h2>Head</h2></div>
+      <article class="pp-pi">
+        <img class="pp-photo" src="people/SouradyutiP.jpg" alt="Prof. Souradyuti Paul" onerror="ppFallback(this)">
+        <div>
+          <h3>Prof. Souradyuti Paul</h3>
+          <span class="pp-role">Professor &amp; Head</span>
+          <ul class="pp-tags" aria-label="Research interests">
+            <li>Blockchain</li><li>Cryptography</li>
+          </ul>
+          <div class="pp-actions">
+            <a class="pp-btn pp-primary" href="https://souradyutip.github.io/" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+              Homepage
+            </a>
+            <a class="pp-btn" href="mailto:souradyuti@iitbhilai.ac.in">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              souradyuti@iitbhilai.ac.in
+            </a>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ============ PhD Students ============ -->
+    <section class="pp-section" id="phd">
+      <div class="pp-head"><h2>PhD Students</h2><span class="pp-count">2 members</span></div>
+      <div class="pp-grid">
+
+        <article class="pp-card">
+          <img class="pp-photo" src="people/AbuT.jpeg" alt="Abu Talha" loading="lazy" onerror="ppFallback(this)">
+          <div class="pp-card-body">
+            <div><h3>Abu Talha</h3><span class="pp-role">Research Scholar</span></div>
+            <ul class="pp-tags" aria-label="Research topics"><li>Statistics</li><li>Diffusion Models</li></ul>
+            <div class="pp-actions">
+              <a class="pp-icon" href="mailto:abut@iitbhilai.ac.in" title="abut@iitbhilai.ac.in" aria-label="Email Abu Talha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
+              <a class="pp-icon" href="https://sites.google.com/view/talhaiiserb/home" target="_blank" rel="noopener noreferrer" title="Personal website" aria-label="Abu Talha's website"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="pp-card">
+          <img class="pp-photo" src="people/VijayST.jpeg" alt="Vijay Shankar Tiwari" loading="lazy" onerror="ppFallback(this)">
+          <div class="pp-card-body">
+            <div><h3>Vijay Shankar Tiwari</h3><span class="pp-role">Research Scholar</span></div>
+            <div class="pp-actions">
+              <a class="pp-icon" href="mailto:vijayst@iitbhilai.ac.in" title="vijayst@iitbhilai.ac.in" aria-label="Email Vijay Shankar Tiwari"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
+              <a class="pp-icon" href="https://www.linkedin.com/in/vijay-shankar-tiwari-5637b1337/" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="Vijay Shankar Tiwari on LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ============ Research Staff ============ -->
+    <section class="pp-section" id="staff">
+      <div class="pp-head"><h2>Research Staff</h2><span class="pp-count">3 members</span></div>
+      <div class="pp-grid">
+
+        <article class="pp-card">
+          <img class="pp-photo" src="people/RenuB.jpeg" alt="Renu Bakshi" loading="lazy" onerror="ppFallback(this)">
+          <div class="pp-card-body">
+            <div><h3>Renu Bakshi</h3><span class="pp-role">Crypto Security Engineer</span></div>
+            <ul class="pp-tags" aria-label="Research topics"><li>Blockchain Technology</li><li>Fintech Security</li></ul>
+            <div class="pp-actions">
+              <a class="pp-icon" href="mailto:renu47010@gmail.com" title="renu47010@gmail.com" aria-label="Email Renu Bakshi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
+              <a class="pp-icon" href="https://www.linkedin.com/in/renu-bakshi/" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="Renu Bakshi on LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="pp-card">
+          <img class="pp-photo" src="people/RohanMW.jpg" alt="Rohan Madhukar Wasnik" loading="lazy" onerror="ppFallback(this)">
+          <div class="pp-card-body">
+            <div><h3>Rohan Madhukar Wasnik</h3><span class="pp-role">Project Assistant</span></div>
+            <ul class="pp-tags" aria-label="Research topics"><li>Blockchain Technology</li><li>Fintech Security</li></ul>
+            <div class="pp-actions">
+              <a class="pp-icon" href="mailto:wasnikrohan853@gmail.com" title="wasnikrohan853@gmail.com" aria-label="Email Rohan Madhukar Wasnik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="pp-card">
+          <img class="pp-photo" src="people/ArupKP.jpeg" alt="Mr. Arup Kumar Paul" loading="lazy" onerror="ppFallback(this)">
+          <div class="pp-card-body">
+            <div><h3>Mr. Arup Kumar Paul</h3><span class="pp-role">Project Associate</span></div>
+            <ul class="pp-tags" aria-label="Research topics"><li>Smart Card</li><li>Fintech Security</li><li>Web/App Development</li><li>E-Governance</li></ul>
+            <div class="pp-actions">
+              <a class="pp-icon" href="mailto:arupkumar@iitbhilai.ac.in" title="arupkumar@iitbhilai.ac.in" aria-label="Email Arup Kumar Paul"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ============ Past Members ============ -->
+    <section class="pp-section" id="alumni">
+      <div class="pp-head"><h2>Past Members</h2><span class="pp-count">6 members</span></div>
+      <div class="pp-alumni">
+
+        <article class="pp-alum">
+          <img class="pp-photo" src="people/GoutamH.jpeg" alt="Goutam Halder" loading="lazy" onerror="ppFallback(this)">
+          <div class="pp-alum-body">
+            <h3>Goutam Halder</h3><span class="pp-role">MTech in CSE (2024-2026)</span>
+            <p class="pp-topic"><span class="pp-label">Area:</span> Blockchain in E-Governance</p>
+          </div>
+        </article>
+
+        <article class="pp-alum">
+          <img class="pp-photo" src="people/PrakharG.jpeg" style="object-position:center 42%" alt="Prakhar Garg" loading="lazy" onerror="ppFallback(this)">
+          <div class="pp-alum-body">
+            <h3>Prakhar Garg</h3><span class="pp-role">MTech in CSE (2024-2026)</span>
+            <p class="pp-topic"><span class="pp-label">Area:</span> Blockchain Technology</p>
+          </div>
+        </article>
+
+        <article class="pp-alum">
+          <img class="pp-photo" src="https://media.licdn.com/dms/image/v2/D4D03AQF4_JYTofX2GA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1720455874897?e=1764201600&amp;v=beta&amp;t=P_i9aOwP8jFPy8IjjAWJrMJ2VDfoseFQECjmIwXdsUk" alt="Bhakti Dhorajiya" loading="lazy" onerror="ppFallback(this)">
+          <div class="pp-alum-body">
+            <h3>Bhakti Dhorajiya</h3><span class="pp-role">MTech in CSE (2023-2025)</span>
+            <p class="pp-topic"><span class="pp-label">Area:</span> On Secure E-Voting</p>
+            <div class="pp-actions">
+              <a class="pp-icon" href="https://www.linkedin.com/in/bhakti-dhorajiya-291216201/" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="Bhakti Dhorajiya on LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="pp-alum">
+          <img class="pp-photo" src="https://media.licdn.com/dms/image/v2/D4D03AQHzspQPs6FoaA/profile-displayphoto-scale_400_400/B4DZqltwbhIMAg-/0/1763716828811?e=1765411200&amp;v=beta&amp;t=gzEdsY47WLcyzv-d599ZqbrO-EnZSDMwKYpW2ZgoKuo" alt="Abhishek Neogi" loading="lazy" onerror="ppFallback(this)">
+          <div class="pp-alum-body">
+            <h3>Abhishek Neogi</h3><span class="pp-role">Intern (2023-2025)</span>
+            <p class="pp-topic"><span class="pp-label">Area:</span> Blockchain Applications</p>
+            <div class="pp-actions">
+              <a class="pp-icon" href="https://www.linkedin.com/in/abhishek-neogi-472783228/" target="_blank" rel="noopener noreferrer" title="LinkedIn" aria-label="Abhishek Neogi on LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="pp-alum">
+          <img class="pp-photo" src="people/RishabhKD.jpeg" alt="Rishabh Kumar Dewangan" loading="lazy" onerror="ppFallback(this)">
+          <div class="pp-alum-body">
+            <h3>Rishabh Kumar Dewangan</h3><span class="pp-role">Project Associate (2024-2026)</span>
+            <p class="pp-topic"><span class="pp-label">Area:</span> Cyber security: web app / APK pentesting</p>
+            <div class="pp-actions">
+              <a class="pp-icon" href="https://medium.com/@rishabhkumar-rk" target="_blank" rel="noopener noreferrer" title="Medium blog" aria-label="Rishabh Kumar Dewangan on Medium"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="pp-alum">
+          <img class="pp-photo" src="people/DevanshS.jpeg" alt="Devansh Shrivastava" loading="lazy" onerror="ppFallback(this)">
+          <div class="pp-alum-body">
+            <h3>Devansh Shrivastava</h3><span class="pp-role">Junior Research Fellow (2024-2026)</span>
+            <p class="pp-topic"><span class="pp-label">Area:</span> Blockchain Technology, Fintech Security</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </div>
+</main>
+<footer class="w-full bg-gray-100 border-t border-gray-200 "><div class="flex flex-col lg:flex-row justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"><div><p class="text-gray-700 my-2 text-sm text-center lg:text-right">Site developed and managed by: <span class="font-semibold">Devansh Shrivastava</span></p></div><div class="text-center"><p class="text-gray-700 text-sm my-2">© 2026 <span class="font-semibold">SPRING Labs</span>: All rights reserved.</p></div><div><p class="text-gray-700 text-sm my-2 text-center lg:text-right">The word "SPRING Labs" was conceived by <span class="font-semibold">Dr. Dhiman Saha (CSE, IIT Bhilai)</span></p></div></div></footer></div>
   
 
 <script src="js/site.js"></script>
