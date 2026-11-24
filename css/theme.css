@@ -409,3 +409,31 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; }
 }
+
+/* ================= Product card buttons ================= */
+.prod-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 20px; }
+.prod-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font: 500 14px/1.2 var(--font-body);
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.prod-btn:hover, .prod-btn[aria-expanded="true"] { border-color: var(--brand); color: var(--brand); background: var(--soft); }
+.prod-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+.prod-panel {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--alt);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 14px;
+}

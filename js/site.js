@@ -135,6 +135,17 @@
     if (n) el.textContent = n;
   });
 
+  /* ---------- Toggle buttons that show/hide a panel (e.g. product "Description") ---------- */
+  document.querySelectorAll('[data-toggle-panel]').forEach(function (btn) {
+    var panel = document.getElementById(btn.getAttribute('aria-controls'));
+    if (!panel) return;
+    btn.addEventListener('click', function () {
+      var open = btn.getAttribute('aria-expanded') !== 'true';
+      btn.setAttribute('aria-expanded', String(open));
+      panel.hidden = !open;
+    });
+  });
+
   /* ---------- One scrolling page (index.html#people, #publications, ...) ----------
      The main sections are stacked on one page and nav links scroll to them.
      Project detail pages (project-1..5) are shown on their own, in place of the page. */
