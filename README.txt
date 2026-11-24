@@ -23,3 +23,7 @@ Open index.html in a browser, or upload this whole folder to any web server
 To change text, edit the matching <div data-page="..."> block in index.html.
 To link to a section, use href="#NAME" (e.g. href="#people"); a link to any id
 (e.g. href="#alumni") scrolls to it.
+
+After changing css/*.css or js/site.js, bump the "?v=..." number on their
+<link>/<script> tags in index.html and 404.html (e.g. to today's date) so
+visitors' browsers load the new files instead of a cached copy.
