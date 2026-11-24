@@ -65,94 +65,6 @@
     });
   });
 
-  /* ---------- Project search (home page) ---------- */
-  var search = document.querySelector('[data-project-search]');
-  var grid = document.querySelector('[data-project-grid]');
-  if (search && grid) {
-    var wrap = search.parentElement;
-    var clearBtn = document.createElement('button');
-    clearBtn.type = 'button';
-    clearBtn.className = 'absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 hidden';
-    clearBtn.textContent = '×';
-    wrap.appendChild(clearBtn);
-
-    var status = document.createElement('div');
-    status.className = 'text-center mt-2 text-sm text-secondary hidden';
-    wrap.parentElement.appendChild(status);
-
-    var empty = document.createElement('div');
-    empty.className = 'text-center py-12 hidden';
-    empty.innerHTML = '<div class="text-gray-400 text-lg mb-4">No projects found matching your search criteria.</div>' +
-      '<button type="button" class="text-primary font-medium hover:text-primary/80 transition-colors duration-200">Clear search and show all projects</button>';
-    grid.parentElement.insertBefore(empty, grid.nextSibling);
-
-    var apply = function () {
-      var q = search.value;
-      var lq = q.trim().toLowerCase();
-      var count = 0;
-      Array.prototype.forEach.call(grid.children, function (card) {
-        var show = !lq || card.getAttribute('data-search').indexOf(lq) !== -1;
-        card.style.display = show ? '' : 'none';
-        if (show) count++;
-      });
-      clearBtn.classList.toggle('hidden', !q);
-      status.classList.toggle('hidden', !q);
-      status.textContent = 'Found ' + count + ' project' + (count !== 1 ? 's' : '') + ' matching "' + q + '"';
-      empty.classList.toggle('hidden', !(q && count === 0));
-    };
-    var clear = function () { search.value = ''; apply(); };
-    search.addEventListener('input', apply);
-    clearBtn.addEventListener('click', clear);
-    empty.querySelector('button').addEventListener('click', clear);
-  }
-
-  /* ---------- Publication search (publications page) ---------- */
-  var pubSearch = document.querySelector('[data-pub-search]');
-  var pubList = document.querySelector('[data-pub-list]');
-  if (pubSearch && pubList) {
-    var pWrap = pubSearch.parentElement;
-    var pClear = document.createElement('button');
-    pClear.type = 'button';
-    pClear.className = 'absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 hidden';
-    pClear.textContent = '×';
-    pWrap.appendChild(pClear);
-
-    var pStatus = document.createElement('div');
-    pStatus.className = 'text-center mt-2 text-sm text-secondary hidden';
-    pWrap.parentElement.appendChild(pStatus);
-
-    var pEmpty = document.createElement('div');
-    pEmpty.className = 'text-center py-12 hidden';
-    pEmpty.innerHTML = '<div class="text-gray-400 text-lg mb-4">No publications found matching your search.</div>' +
-      '<button type="button" class="text-primary font-medium hover:text-primary/80 transition-colors duration-200">Clear search and show all publications</button>';
-    pubList.parentElement.insertBefore(pEmpty, pubList.nextSibling);
-
-    var pApply = function () {
-      var q = pubSearch.value;
-      var terms = q.trim().toLowerCase().split(/\s+/).filter(Boolean);
-      var count = 0;
-      pubList.querySelectorAll('[data-year-group]').forEach(function (g) {
-        var inGroup = 0;
-        g.querySelectorAll('[data-pub]').forEach(function (el) {
-          var hay = el.getAttribute('data-search');
-          var show = terms.every(function (t) { return hay.indexOf(t) !== -1; });
-          el.style.display = show ? '' : 'none';
-          if (show) inGroup++;
-        });
-        g.style.display = inGroup ? '' : 'none';
-        count += inGroup;
-      });
-      pClear.classList.toggle('hidden', !q);
-      pStatus.classList.toggle('hidden', !q);
-      pStatus.textContent = 'Found ' + count + ' publication' + (count !== 1 ? 's' : '') + ' matching "' + q + '"';
-      pEmpty.classList.toggle('hidden', !(q && count === 0));
-    };
-    var pReset = function () { pubSearch.value = ''; pApply(); };
-    pubSearch.addEventListener('input', pApply);
-    pClear.addEventListener('click', pReset);
-    pEmpty.querySelector('button').addEventListener('click', pReset);
-  }
-
   /* ---------- "Apply Now" dialog (home page) ---------- */
   var mount = document.getElementById('dialog-mount');
   var tplHolder = document.getElementById('apply-dialog-templates');
@@ -215,5 +127,75 @@
       }
     });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && currentRole !== null) close(); });
+  }
+
+  /* ---------- Home hero stats: count what is actually on the page ---------- */
+  document.querySelectorAll('[data-stat]').forEach(function (el) {
+    var n = document.querySelectorAll(el.getAttribute('data-stat')).length;
+    if (n) el.textContent = n;
+  });
+
+  /* ---------- One scrolling page (index.html#people, #publications, ...) ----------
+     The main sections are stacked on one page and nav links scroll to them.
+     Project detail pages (project-1..5) are shown on their own, in place of the page. */
+  var pages = document.querySelectorAll('[data-page]');
+  if (pages.length) {
+    var isDetail = function (p) { return /^project-\d+$/.test(p.getAttribute('data-page')); };
+    var mainPages = Array.prototype.filter.call(pages, function (p) { return !isDetail(p); });
+    var navLinks = document.querySelectorAll('#root > nav a[href^="#"]');
+    var detailOpen = false;
+
+    var setActive = function (name) {
+      Array.prototype.forEach.call(navLinks, function (a) {
+        // The logo also links to #home; only highlight the text links.
+        var on = a.getAttribute('href') === '#' + name && !a.querySelector('img');
+        a.classList.toggle('is-active', on);
+        if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+      });
+    };
+
+    var route = function () {
+      var key = decodeURIComponent(location.hash.slice(1)) || 'home';
+      var detail = document.querySelector('[data-page="' + key + '"]');
+      var showDetail = !!(detail && isDetail(detail));
+
+      Array.prototype.forEach.call(pages, function (p) {
+        p.hidden = showDetail ? p !== detail : isDetail(p);
+      });
+
+      // Close the mobile menu after choosing a link.
+      if (mPanel && mToggle && !mPanel.classList.contains('max-h-0')) mToggle.click();
+
+      if (showDetail) {
+        detailOpen = true;
+        setActive('projects');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        return;
+      }
+      var target = document.getElementById(key);
+      if (detailOpen || !target) {
+        // Coming back from a project page (or unknown link): jump without animating.
+        detailOpen = false;
+        if (target) target.scrollIntoView({ behavior: 'instant' });
+        else window.scrollTo({ top: 0, behavior: 'instant' });
+      } else {
+        target.scrollIntoView();
+      }
+    };
+    window.addEventListener('hashchange', route);
+    route();
+
+    // Highlight the nav link for the section currently in view.
+    var spy = function () {
+      if (detailOpen) return;
+      var current = mainPages[0];
+      mainPages.forEach(function (p) { if (p.getBoundingClientRect().top <= 80) current = p; });
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+        current = mainPages[mainPages.length - 1];
+      }
+      setActive(current.getAttribute('data-page'));
+    };
+    window.addEventListener('scroll', spy, { passive: true });
+    spy();
   }
 })();
